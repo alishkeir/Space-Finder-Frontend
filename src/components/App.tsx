@@ -1,8 +1,21 @@
-import React from "react";
-import "./App.css";
+import React, { Component } from "react";
+// import "./App.css";
+import { User } from "../models/model";
+import { AuthService } from "../services/AuthService";
 
-function App() {
-  return <div></div>;
+// eslint-disable-next-line
+interface AppState {
+  user: User | undefined;
 }
 
-export default App;
+export class App extends Component {
+  private authService: AuthService = new AuthService();
+
+  render() {
+    return (
+      <>
+        <div>Testtt</div>
+      </>
+    );
+  }
+}
