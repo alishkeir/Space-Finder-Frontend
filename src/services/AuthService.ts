@@ -1,4 +1,3 @@
-import { readSync } from "node:fs";
 import { User } from "../models/model";
 
 export class AuthService {
