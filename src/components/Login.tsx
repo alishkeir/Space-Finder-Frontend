@@ -35,19 +35,30 @@ export class Login extends Component<LoginProps, LoginState> {
 
   private async handleSubmit(event: SyntheticEvent) {
     event.preventDefault();
+    this.setState({ loginAttempt: true });
     const result = await this.props.authService.login(
       this.state.userName,
       this.state.password
     );
 
     if (result) {
-      console.log(result);
+      // console.log(result);
+      this.setState({ loginSuccess: true });
     } else {
-      console.log("Error");
+      this.setState({ loginSuccess: false });
     }
   }
 
   render() {
+    let loginMessage: any;
+    if (this.state.loginAttempt) {
+      if (this.state.loginSuccess) {
+        loginMessage = <h4>Successfuly logged in</h4>;
+      } else {
+        loginMessage = <h4>Invalid Username or Password</h4>;
+      }
+    }
+
     return (
       <div>
         <h2>Please Login!</h2>
@@ -65,6 +76,7 @@ export class Login extends Component<LoginProps, LoginState> {
           <br />
           <input type="submit" value="Login" />
         </form>
+        {loginMessage}
       </div>
     );
   }
