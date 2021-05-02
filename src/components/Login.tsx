@@ -1,5 +1,5 @@
 import { Component, SyntheticEvent } from "react";
-import { User } from "../models/model";
+import { User } from "../models/Model";
 import { AuthService } from "../services/AuthService";
 import History from "../utils/History";
 interface LoginProps {

@@ -1,6 +1,6 @@
 import { Component } from "react";
 // import "./App.css";
-import { User } from "../models/model";
+import { User } from "../models/Model";
 import { AuthService } from "../services/AuthService";
 import { Login } from "./Login";
 import { Router, Switch, Route } from "react-router-dom";
@@ -43,7 +43,12 @@ export class App extends Component<{}, AppState> {
               <Route exact path="/login">
                 <Login authService={this.authService} setUser={this.setUser} />
               </Route>
-              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/profile">
+                <Profile
+                  authService={this.authService}
+                  user={this.state.user}
+                />
+              </Route>
             </Switch>
           </div>
         </Router>
