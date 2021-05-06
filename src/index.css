@@ -12,7 +12,6 @@ code {
     monospace;
 }
 
-
 .wrapper {
   margin: auto;
   width: 70%;
@@ -47,4 +46,8 @@ code {
 
 .navbar a:last-child {
   float: right;
+}
+
+button {
+  cursor: pointer;
 }

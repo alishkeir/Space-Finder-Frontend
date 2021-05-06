@@ -13,6 +13,7 @@ export default class NavBar extends Component<{ user: User | undefined }> {
       <div className="navbar">
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
+        <Link to="/spaces">Spaces</Link>
         {loginLogout}
       </div>
     );
