@@ -22,4 +22,12 @@ export class DataService {
 
     return result;
   }
+
+  public async reserveSpace(spaceID: string): Promise<string | undefined> {
+    if (spaceID === "123") {
+      return "5555";
+    } else {
+      return undefined;
+    }
+  }
 }
