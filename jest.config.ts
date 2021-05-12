@@ -20,6 +20,7 @@ const config: Config.InitialOptions = {
     "src/**/*.{ts,tsx}",
     "!src/services/**",
     "!src/react-app-env.d.ts",
+    "!src/index.tsx",
   ],
 };
 
