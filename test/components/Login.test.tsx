@@ -1,18 +1,25 @@
+import * as ReactDOM from "react-dom";
 import { Login } from "../../src/components/Login";
-import ReactDOM from "react-dom";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, waitFor } from "@testing-library/react";
+import { User } from "../../src/models/Model";
+import history from "../../src/utils/History";
 
-describe("Login Component Test Suite", () => {
+const someUser: User = {
+  userName: "someUser",
+  email: "someEmail",
+};
+
+describe("Login component test suite", () => {
   let container: HTMLDivElement;
   const authServiceMock = {
     login: jest.fn(),
   };
-
   const setUserMock = jest.fn();
 
-  //^ Setup our component
+  const historyMock = history;
+  history.push = jest.fn();
+
   beforeEach(() => {
-    // console.log("Before Each");
     container = document.createElement("div");
     document.body.appendChild(container);
     ReactDOM.render(
@@ -20,46 +27,64 @@ describe("Login Component Test Suite", () => {
       container
     );
   });
-
-  //^ Clean up the component
   afterEach(() => {
-    // console.log("After Each");
     document.body.removeChild(container);
     container.remove();
-    jest.clearAllMocks;
+    jest.clearAllMocks();
   });
-
-  test("Renders Correclty Initial Document", () => {
-    // expect(true).toBeTruthy();
+  test("Renders correctly initial document", () => {
     const title = document.querySelector("h2");
-    expect(title!.textContent).toBe("Please Login!");
-
+    expect(title!.textContent).toBe("Please login");
     const inputs = document.querySelectorAll("input");
     expect(inputs).toHaveLength(3);
     expect(inputs[0].value).toBe("");
     expect(inputs[1].value).toBe("");
     expect(inputs[2].value).toBe("Login");
-
-    const labels = document.querySelector("label");
-
-    expect(labels).not.toBeInTheDocument();
+    const label = document.querySelector("label");
+    expect(label).not.toBeInTheDocument();
   });
-
-  //^ Now with React Testing Library
-
-  test("Passes Credentials Correclty Initial Document", () => {
+  test("Passes credentials correclty", () => {
     const inputs = document.querySelectorAll("input");
     const loginInput = inputs[0];
     const passwordInput = inputs[1];
-    const confirmButton = inputs[2];
+    const loginButton = inputs[2];
+    fireEvent.change(loginInput, { target: { value: "someUser" } });
+    fireEvent.change(passwordInput, { target: { value: "somePass" } });
+    fireEvent.click(loginButton);
+    expect(authServiceMock.login).toBeCalledWith("someUser", "somePass");
+  });
+
+  test("Correclty handles login success", async () => {
+    authServiceMock.login.mockResolvedValueOnce(someUser);
+    const inputs = document.querySelectorAll("input");
+    const loginInput = inputs[0];
+    const passwordInput = inputs[1];
+    const loginButton = inputs[2];
 
     fireEvent.change(loginInput, { target: { value: "someUser" } });
-    fireEvent.change(passwordInput, { target: { value: "somePassword" } });
-    fireEvent.change(confirmButton);
+    fireEvent.change(passwordInput, { target: { value: "somePass" } });
+    fireEvent.click(loginButton);
 
-    expect(authServiceMock.login).not.toBeCalledWith(
-      "someUser",
-      "somePassword"
-    );
+    const statusLabel = await waitFor(() => container.querySelector("label"));
+    expect(statusLabel).toBeInTheDocument();
+    expect(statusLabel).toHaveTextContent("Login successful");
+    expect(setUserMock).toBeCalledWith(someUser);
+    expect(historyMock.push).toBeCalledWith("/profile");
+  });
+
+  test("Correclty handles login fail", async () => {
+    authServiceMock.login.mockResolvedValueOnce(undefined);
+    const inputs = document.querySelectorAll("input");
+    const loginInput = inputs[0];
+    const passwordInput = inputs[1];
+    const loginButton = inputs[2];
+
+    fireEvent.change(loginInput, { target: { value: "someUser" } });
+    fireEvent.change(passwordInput, { target: { value: "somePass" } });
+    fireEvent.click(loginButton);
+
+    const statusLabel = await waitFor(() => container.querySelector("label"));
+    expect(statusLabel).toBeInTheDocument();
+    expect(statusLabel).toHaveTextContent("Login failed");
   });
 });
